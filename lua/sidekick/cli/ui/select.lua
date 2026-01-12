@@ -12,8 +12,38 @@ function M.select(opts)
   assert(type(opts) == "table", "opts must be a table")
   local tools = require("sidekick.cli.state").get(opts.filter)
 
-  ---@param state? sidekick.cli.State
-  local on_select = function(state)
+  local state_map = {} ---@type sidekick.cli.State[]
+
+  local items = vim.tbl_map(function(state)
+    local item = {
+      _idx = #state_map + 1,
+      tool = {
+        name = state.tool.name,
+      },
+      attached = state.attached,
+      external = state.external,
+      installed = state.installed,
+      started = state.started,
+    }
+    if state.session then
+      item.session = {
+        backend = state.session.backend,
+        mux_backend = state.session.mux_backend,
+        mux_session = state.session.mux_session,
+        cwd = state.session.cwd,
+      }
+    end
+    state_map[#state_map + 1] = state
+    return item
+  end, tools)
+
+  ---@param item? table
+  local on_select = function(item)
+    if not item or not item._idx then
+      opts.cb(nil)
+      return
+    end
+    local state = state_map[item._idx]
     if state and not state.installed then
       M.on_missing(state.tool)
       state = nil
@@ -25,7 +55,7 @@ function M.select(opts)
     Util.warn("No tools match the given filter")
     return
   elseif #tools == 1 and opts.auto then
-    on_select(tools[1])
+    on_select(items[1])
     return
   end
 
@@ -33,17 +63,30 @@ function M.select(opts)
   local select_opts = {
     prompt = "Select CLI tool:",
     kind = "sidekick_cli",
-    ---@param tool sidekick.cli.State
-    format_item = function(tool)
-      local parts = M.format(tool)
+    ---@param item table
+    format_item = function(item)
+      if not item or not item._idx then
+        return ""
+      end
+      local state = state_map[item._idx]
+      if not state then
+        return ""
+      end
+      local parts = M.format(state)
       return table.concat(vim.tbl_map(function(p)
         return p[1]
       end, parts))
     end,
-    snacks = { format = M.format },
+    snacks = { format = function(item, picker)
+      if not item or not item._idx then
+        return {}
+      end
+      local state = state_map[item._idx]
+      return state and M.format(state, picker) or {}
+    end },
   }
 
-  vim.ui.select(tools, select_opts, on_select)
+  vim.ui.select(items, select_opts, on_select)
 end
 
 ---@param tool sidekick.cli.Tool

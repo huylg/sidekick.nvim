@@ -38,6 +38,9 @@ M.commands = {
     toggle = function(opts)
       require("sidekick.cli").toggle(opts)
     end,
+    toggle_all = function()
+      require("sidekick.cli").toggle_all()
+    end,
     hide = function(opts)
       require("sidekick.cli").hide(opts)
     end,

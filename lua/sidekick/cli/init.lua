@@ -115,6 +115,46 @@ function M.toggle(opts)
   })
 end
 
+--- Toggle visibility of all CLI tool terminals
+function M.toggle_all()
+  local states = State.get({ attached = true, terminal = true })
+  if #states == 0 then
+    Util.warn("No CLI tools are currently attached")
+    return
+  end
+
+  local any_open = false
+  for _, state in ipairs(states) do
+    if state.terminal and state.terminal:is_open() then
+      any_open = true
+      break
+    end
+  end
+
+  if any_open then
+    for _, state in ipairs(states) do
+      if state.terminal then
+        state.terminal:hide()
+      end
+    end
+  else
+    local last_state = nil
+    local last_atime = 0
+    for _, state in ipairs(states) do
+      if state.terminal then
+        state.terminal:show()
+        if state.terminal.atime and state.terminal.atime > last_atime then
+          last_atime = state.terminal.atime
+          last_state = state
+        end
+      end
+    end
+    if last_state and last_state.terminal then
+      last_state.terminal:focus()
+    end
+  end
+end
+
 --- Toggle focus of the terminal window if it is already open
 ---@param opts? sidekick.cli.Show
 ---@overload fun(name: string)
