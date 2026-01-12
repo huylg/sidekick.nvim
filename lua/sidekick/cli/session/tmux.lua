@@ -8,7 +8,7 @@ local M = {}
 M.__index = M
 
 local PANE_FORMAT =
-  "#{session_id}:#{pane_id}:#{pane_pid}:#{session_name}:#{?pane_current_path,#{pane_current_path},#{pane_start_path}}"
+"#{session_id}:#{pane_id}:#{pane_pid}:#{session_name}:#{?pane_current_path,#{pane_current_path},#{pane_start_path}}"
 
 ---@return sidekick.cli.terminal.Cmd?
 function M:attach()
@@ -35,6 +35,7 @@ function M:start()
     self:add_cmd(cmd)
     vim.list_extend(cmd, { ";", "set-option", "status", "off" })
     vim.list_extend(cmd, { ";", "set-option", "detach-on-destroy", "on" })
+    vim.list_extend(cmd, { ";", "set-option", "remain-on-exit", "on" })
     return { cmd = cmd }
   elseif Config.cli.mux.create == "window" then
     local cmd = { "tmux", "new-window", "-dP", "-c", self.cwd, "-F", PANE_FORMAT }
@@ -96,8 +97,8 @@ function M.panes(opts)
       ---@class sidekick.tmux.Pane
       panes[#panes + 1] = {
         skid = ("tmux %s"):format(pid), -- unique id for the pane
-        pid = pid, -- process id of the pane
-        id = id, -- tmux pane id
+        pid = pid,                      -- process id of the pane
+        id = id,                        -- tmux pane id
         session_name = session_name,
         session_id = session_id,
         cwd = cwd,
