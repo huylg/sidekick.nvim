@@ -35,7 +35,7 @@ function M:start()
     self:add_cmd(cmd)
     vim.list_extend(cmd, { ";", "set-option", "status", "off" })
     vim.list_extend(cmd, { ";", "set-option", "detach-on-destroy", "on" })
-    vim.list_extend(cmd, { ";", "set-option", "remain-on-exit", "on" })
+    vim.list_extend(cmd, { ";", "set-option", "remain-on-exit", "off" })
     return { cmd = cmd }
   elseif Config.cli.mux.create == "window" then
     local cmd = { "tmux", "new-window", "-dP", "-c", self.cwd, "-F", PANE_FORMAT }
