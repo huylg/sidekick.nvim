@@ -111,6 +111,7 @@ local defaults = {
         keys = { prompt = { "<a-p>", "prompt" } },
       },
       cursor = { cmd = { "cursor-agent" } },
+      flutter = { cmd = { "flutter" } },
       gemini = { cmd = { "gemini" } },
       grok = { cmd = { "grok" } },
       opencode = {
