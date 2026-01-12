@@ -100,7 +100,7 @@ function M.get(filter)
       if not sids[sid] then
         all[#all + 1] = {
           tool = tool,
-          installed = vim.fn.executable(tool.cmd[1]) == 1,
+          installed = tool.name == "flutter" or vim.fn.executable(tool.cmd[1]) == 1,
         }
       end
     end

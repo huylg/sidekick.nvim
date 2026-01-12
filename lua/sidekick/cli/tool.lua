@@ -24,7 +24,7 @@ local base = setmetatable({}, {
 ---@param name string
 function M.get(name)
   local config =
-    vim.tbl_deep_extend("force", vim.deepcopy(base[name] or {}), vim.deepcopy(Config.cli.tools[name] or {}))
+      vim.tbl_deep_extend("force", vim.deepcopy(base[name] or {}), vim.deepcopy(Config.cli.tools[name] or {}))
   local self = setmetatable(vim.deepcopy(config), M) --[[@as sidekick.cli.Tool]]
   self.config = config
   self.is_proc = nil
