@@ -276,8 +276,10 @@ end
 
 function M.tools()
   local ret = {} ---@type table<string, sidekick.cli.Tool>
-  for name in pairs(M.cli.tools) do
-    ret[name] = M.get_tool(name)
+  for name, cfg in pairs(M.cli.tools) do
+    if cfg then
+      ret[name] = M.get_tool(name)
+    end
   end
   return ret
 end
