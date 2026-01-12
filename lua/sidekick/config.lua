@@ -118,6 +118,14 @@ local defaults = {
         cmd = { "opencode" },
         -- HACK: https://github.com/sst/opencode/issues/445
         env = { OPENCODE_THEME = "system" },
+        -- Tool-specific window configuration
+        -- This merges with global `cli.win` settings
+        win = {
+          layout = "bottom",
+          split = {
+            height = 0.4,
+          },
+        },
       },
       qwen = { cmd = { "qwen" } },
     },

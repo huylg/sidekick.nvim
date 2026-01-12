@@ -102,14 +102,14 @@ function M.new(opts)
 end
 
 function M:init()
-  self.opts = vim.deepcopy(Config.cli.win)
+  self.opts = vim.tbl_deep_extend("force", vim.deepcopy(Config.cli.win), vim.deepcopy(self.tool.win or {}))
   self.ctime = vim.uv.hrtime()
   self.atime = self.ctime
   self.send_queue = {}
   self.group = vim.api.nvim_create_augroup("sidekick_cli_" .. self.id, { clear = true })
   M.terminals[self.id] = self
-  if Config.cli.win.config then
-    Config.cli.win.config(self)
+  if self.opts.config then
+    self.opts.config(self)
   end
   self.scrollback = require("sidekick.cli.scrollback").new(self)
   return self

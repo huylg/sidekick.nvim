@@ -21,6 +21,7 @@ local M = {}
 ---@field mux_focus? boolean wether the tool needs to be focused in order to receive input
 ---@field format? fun(text:sidekick.Text[], str:string):string?
 ---@field native_scroll? boolean whether the tool handles scrolling natively
+---@field win? sidekick.win.Opts Window configuration specific to this tool
 
 ---@class sidekick.cli.Show
 ---@field name? string
